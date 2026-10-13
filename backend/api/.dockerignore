@@ -1,0 +1,13 @@
+node_modules
+dist
+.git
+.gitignore
+.env
+.env.*
+*.sqlite
+*.sqlite3
+*.db
+storage/uploads/*
+storage/temp/*
+storage/reports/*
+npm-debug.log*

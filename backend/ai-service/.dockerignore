@@ -1,0 +1,17 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+models
+whisper-models
+*.bin
+*.pt
+*.onnx
+.git
+.gitignore
+.env
+.env.*

@@ -1,0 +1,15 @@
+Startup Name: AgriScan AI
+Industry: Agriculture
+Target Geography: South Asia
+Founder: Priya Sharma & Dr. Rajesh Patel
+
+[00:00] Hello investors, my name is Priya Sharma, CEO and co-founder of AgriScan AI.
+[00:08] Every year, over 120 million smallholder farmers across South Asia lose between 25% and 40% of their annual crop yield to preventable fungal pathogens and insect infestations.
+[00:22] Current government extension services have an acute ratio of only one agricultural officer per 2,500 farmers, meaning diagnosis often arrives three weeks too late when the crop is already destroyed.
+[00:36] AgriScan AI is an offline-capable mobile computer vision application. A farmer simply snaps a photo of a diseased leaf using an entry-level Android smartphone.
+[00:48] Our localized edge neural network identifies 94 distinct crop diseases across rice, wheat, and pulses in under 400 milliseconds—functioning even with zero cellular connectivity.
+[01:05] Once diagnosed, the app provides immediate organic or chemical intervention protocols and connects them to vetted local cooperative input retailers.
+[01:18] We operate a B2B2C business model. We partner with rural agricultural cooperatives and micro-finance lenders who license our enterprise risk dashboard for $1.20 per farmer per year to protect agricultural loan recovery.
+[01:34] In our initial four-month pilot across 12 villages in Haryana, we onboarded 3,400 active farmers with a 78% monthly retention rate and documented a verified 22% average reduction in preventable crop loss.
+[01:52] Our founding team brings deep domain and technical pedigree: I previously served as Senior ML Engineer at AgTech Labs, and my co-founder Dr. Rajesh Patel is a plant pathologist with 14 years at the Indian Agricultural Research Institute.
+[02:08] We are raising $500,000 in seed capital to expand our model taxonomy into commercial cash crops like cotton and tea, and scale our cooperative partnerships to 50,000 contracted farmers over the next 12 months.

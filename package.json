@@ -1,0 +1,26 @@
+{
+  "name": "ai-idea-screening-monorepo",
+  "version": "1.0.0",
+  "description": "Full-Stack AI Idea Screening Hackathon MVP with explainable rubric and market provenance",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend/api"
+  ],
+  "scripts": {
+    "test": "npm run test:all",
+    "test:all": "npm run test:ai && npm run test:api && npm run test:ui",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "test:ai": "cd backend/ai-service && .venv\\Scripts\\pytest tests",
+    "test:api": "cd backend/api && npm test",
+    "test:ui": "cd frontend && npm test",
+    "build:all": "npm run build:api && npm run build:ui",
+    "build:api": "cd backend/api && npm run build",
+    "build:ui": "cd frontend && npm run build",
+    "start:ai": "cd backend/ai-service && .venv\\Scripts\\uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload",
+    "start:api": "cd backend/api && npm run dev",
+    "start:ui": "cd frontend && npm run dev"
+  }
+}

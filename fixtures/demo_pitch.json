@@ -1,0 +1,164 @@
+{
+  "pitch": {
+    "id": "demo-pitch-agriscan",
+    "startup_name": "AgriScan AI (Demo Pitch)",
+    "target_geography": "South Asia",
+    "industry": "Agriculture",
+    "original_filename": "sample_pitch.txt",
+    "input_type": "TEXT",
+    "mime_type": "text/plain",
+    "file_size": 1420,
+    "status": "COMPLETED",
+    "original_transcript": "[00:00] Hello investors, my name is Priya Sharma, CEO and co-founder of AgriScan AI.\n[00:08] Every year, over 120 million smallholder farmers across South Asia lose between 25% and 40% of their annual crop yield to preventable fungal pathogens and insect infestations.\n[00:22] Current government extension services have an acute ratio of only one agricultural officer per 2,500 farmers, meaning diagnosis often arrives three weeks too late when the crop is already destroyed.\n[00:36] AgriScan AI is an offline-capable mobile computer vision application. A farmer simply snaps a photo of a diseased leaf using an entry-level Android smartphone.\n[00:48] Our localized edge neural network identifies 94 distinct crop diseases across rice, wheat, and pulses in under 400 milliseconds—functioning even with zero cellular connectivity.\n[01:05] Once diagnosed, the app provides immediate organic or chemical intervention protocols and connects them to vetted local cooperative input retailers.\n[01:18] We operate a B2B2C business model. We partner with rural agricultural cooperatives and micro-finance lenders who license our enterprise risk dashboard for $1.20 per farmer per year to protect agricultural loan recovery.\n[01:34] In our initial four-month pilot across 12 villages in Haryana, we onboarded 3,400 active farmers with a 78% monthly retention rate and documented a verified 22% average reduction in preventable crop loss.\n[01:52] Our founding team brings deep domain and technical pedigree: I previously served as Senior ML Engineer at AgTech Labs, and my co-founder Dr. Rajesh Patel is a plant pathologist with 14 years at the Indian Agricultural Research Institute.\n[02:08] We are raising $500,000 in seed capital to expand our model taxonomy into commercial cash crops like cotton and tea, and scale our cooperative partnerships to 50,000 contracted farmers over the next 12 months.",
+    "normalized_transcript": "[00:00] Hello investors, my name is Priya Sharma, CEO and co-founder of AgriScan AI.\n[00:08] Every year, over 120 million smallholder farmers across South Asia lose between 25% and 40% of their annual crop yield to preventable fungal pathogens and insect infestations.\n[00:22] Current government extension services have an acute ratio of only one agricultural officer per 2,500 farmers, meaning diagnosis often arrives three weeks too late when the crop is already destroyed.\n[00:36] AgriScan AI is an offline-capable mobile computer vision application. A farmer simply snaps a photo of a diseased leaf using an entry-level Android smartphone.\n[00:48] Our localized edge neural network identifies 94 distinct crop diseases across rice, wheat, and pulses in under 400 milliseconds—functioning even with zero cellular connectivity.\n[01:05] Once diagnosed, the app provides immediate organic or chemical intervention protocols and connects them to vetted local cooperative input retailers.\n[01:18] We operate a B2B2C business model. We partner with rural agricultural cooperatives and micro-finance lenders who license our enterprise risk dashboard for $1.20 per farmer per year to protect agricultural loan recovery.\n[01:34] In our initial four-month pilot across 12 villages in Haryana, we onboarded 3,400 active farmers with a 78% monthly retention rate and documented a verified 22% average reduction in preventable crop loss.\n[01:52] Our founding team brings deep domain and technical pedigree: I previously served as Senior ML Engineer at AgTech Labs, and my co-founder Dr. Rajesh Patel is a plant pathologist with 14 years at the Indian Agricultural Research Institute.\n[02:08] We are raising $500,000 in seed capital to expand our model taxonomy into commercial cash crops like cotton and tea, and scale our cooperative partnerships to 50,000 contracted farmers over the next 12 months.",
+    "detected_language": "en",
+    "created_at": "2024-10-13T09:00:00.000Z",
+    "updated_at": "2024-10-13T09:02:30.000Z",
+    "error_message": null
+  },
+  "analysis": {
+    "id": "analysis-demo-agriscan-001",
+    "pitch_id": "demo-pitch-agriscan",
+    "rubric_version": "1.0.0",
+    "evaluation_provider": "deterministic",
+    "evaluation_method": "Deterministic Heuristic Rubric (Rule-Based Fallback)",
+    "overall_score": 82,
+    "criteria_scores": {
+      "problem_clarity": {
+        "name": "Problem Clarity",
+        "score": 90,
+        "weight": 15,
+        "weighted_score": 13.5,
+        "rationale": "High problem clarity. Quantified baseline burden (120M farmers, 25-40% yield loss) and clear structural failure in public extension officer ratios (1:2500).",
+        "evidence": [
+          "Every year, over 120 million smallholder farmers across South Asia lose between 25% and 40% of their annual crop yield...",
+          "Current government extension services have an acute ratio of only one agricultural officer per 2,500 farmers..."
+        ],
+        "missing_evidence": "Historical crop price volatility impact on farmer purchasing power was not provided."
+      },
+      "target_customer": {
+        "name": "Target Customer",
+        "score": 85,
+        "weight": 15,
+        "weighted_score": 12.75,
+        "rationale": "Well-defined primary end user (smallholders) and commercial B2B buyer (rural credit cooperatives and micro-lenders).",
+        "evidence": [
+          "A farmer simply snaps a photo of a diseased leaf using an entry-level Android smartphone.",
+          "We partner with rural agricultural cooperatives and micro-finance lenders who license our enterprise risk dashboard..."
+        ],
+        "missing_evidence": "Direct farmer willingness to pay if cooperative subsidies expire."
+      },
+      "market_evidence": {
+        "name": "Market Evidence",
+        "score": 78,
+        "weight": 15,
+        "weighted_score": 11.7,
+        "rationale": "Verified pilot data demonstrates engagement (3,400 farmers, 78% retention, 22% crop loss reduction), corroborated by regional FAO agritech adoption benchmarks.",
+        "evidence": [
+          "In our initial four-month pilot across 12 villages in Haryana, we onboarded 3,400 active farmers with a 78% monthly retention rate..."
+        ],
+        "missing_evidence": "Controlled randomized trial comparing AgriScan against traditional extension services."
+      },
+      "differentiation": {
+        "name": "Differentiation & Moat",
+        "score": 82,
+        "weight": 15,
+        "weighted_score": 12.3,
+        "rationale": "Offline edge model latency (<400ms) solves critical rural connectivity bottleneck, paired with localized distributor integration.",
+        "evidence": [
+          "Our localized edge neural network identifies 94 distinct crop diseases across rice, wheat, and pulses in under 400 milliseconds—functioning even with zero cellular connectivity."
+        ],
+        "missing_evidence": "Competitive defense against established mobile agronomy incumbents like Plantix."
+      },
+      "feasibility": {
+        "name": "Technical & Operational Feasibility",
+        "score": 85,
+        "weight": 15,
+        "weighted_score": 12.75,
+        "rationale": "Founding team directly matches product needs with ex-senior ML engineer and 14-year agricultural institute research scientist.",
+        "evidence": [
+          "I previously served as Senior ML Engineer at AgTech Labs, and my co-founder Dr. Rajesh Patel is a plant pathologist with 14 years at the Indian Agricultural Research Institute."
+        ],
+        "missing_evidence": "Edge hardware battery consumption metrics across low-tier smartphones."
+      },
+      "business_model": {
+        "name": "Business Model",
+        "score": 80,
+        "weight": 15,
+        "weighted_score": 12.0,
+        "rationale": "Viable B2B2C licensing ($1.20/farmer/year) effectively removes direct monetization friction from cash-constrained farmers.",
+        "evidence": [
+          "license our enterprise risk dashboard for $1.20 per farmer per year to protect agricultural loan recovery."
+        ],
+        "missing_evidence": "Annual contract renewal duration and churn rate assumptions across cooperatives."
+      },
+      "scalability": {
+        "name": "Scalability & Growth",
+        "score": 75,
+        "weight": 10,
+        "weighted_score": 7.5,
+        "rationale": "Aggregator-led channel strategy enables rapid geographic distribution, targeting 50,000 farmers within 12 months with $500k capital.",
+        "evidence": [
+          "We are raising $500,000 in seed capital to expand our model taxonomy into commercial cash crops like cotton and tea, and scale our cooperative partnerships to 50,000 contracted farmers..."
+        ],
+        "missing_evidence": "Regulatory compliance requirements for chemical treatment recommendations across state jurisdictions."
+      }
+    },
+    "strengths": [
+      "Edge-inference capability addresses real rural connectivity limits without recurring cloud inference costs.",
+      "B2B2C cooperative model solves smallholder collection and monetization friction.",
+      "Strong founder-market fit combining deep ML engineering with credible botanical research pedigree.",
+      "Early pilot indicates 78% monthly retention and tangible crop yield preservation."
+    ],
+    "risks": [
+      "Concentration risk on rural cooperative budget cycles and micro-lender decision cycles.",
+      "Hardware diversity across low-cost Android cameras may introduce edge-case diagnostic false negatives.",
+      "Legal and reputational liability if chemical intervention recommendations result in crop damage."
+    ],
+    "assumptions": [
+      "Farmers will trust automated edge diagnoses over traditional generational practices.",
+      "Cooperative managers value reduced credit default sufficiently to renew annual SaaS licenses.",
+      "Edge models maintain high accuracy across varying sunlight, angle, and dirt conditions."
+    ],
+    "missing_information": [
+      "Specific unit economics and gross margin breakdown per farmer license.",
+      "Detailed competitor matrix covering Plantix, CropIn, and local government initiatives.",
+      "Hardware compatibility baseline (minimum RAM and Android OS version supported)."
+    ],
+    "founder_questions": [
+      "How do you plan to handle legal liability if an erroneous diagnosis leads to improper chemical spraying and crop injury?",
+      "What is the average sales cycle when negotiating enterprise software agreements with rural credit cooperatives?",
+      "Can your model weights be updated over the air when farmers intermittently connect to high-bandwidth networks?"
+    ],
+    "market_evidence": [
+      {
+        "id": "mkt-agri-002",
+        "category": "Agriculture",
+        "geography": "South Asia",
+        "claim": "Smallholder farmers account for over 80% of total agricultural production in South Asia, yet under 18% have regular access to digital agronomy or smartphone disease diagnostic tools.",
+        "source_title": "FAO & World Bank South Asia Agritech Diagnostic Report",
+        "source_url": "https://www.fao.org/publications/agritech-south-asia",
+        "publication_date": "2023-11-20",
+        "retrieval_date": "2024-04-12",
+        "verification_status": "VERIFIED",
+        "notes": "Public sector agricultural development study confirming market size and under-penetration."
+      },
+      {
+        "id": "mkt-agri-001",
+        "category": "Agriculture",
+        "geography": "Global",
+        "claim": "The global precision agriculture market was valued at approximately USD 9.5 billion in 2023 and is projected to reach USD 21.9 billion by 2030 at a CAGR of 12.6%.",
+        "source_title": "Grand View Research: Precision Agriculture Market Size & Trend Analysis",
+        "source_url": "https://www.grandviewresearch.com/industry-analysis/precision-farming-market",
+        "publication_date": "2024-01-15",
+        "retrieval_date": "2024-05-10",
+        "verification_status": "VERIFIED",
+        "notes": "Macro sector growth rate benchmark."
+      }
+    ],
+    "confidence_score": 0.85,
+    "confidence_limitations": "Preliminary screening score calculated using rule-based rubric. Not a guarantee of startup survival or investment return.",
+    "is_demo": true,
+    "created_at": "2024-10-13T09:02:30.000Z"
+  }
+}

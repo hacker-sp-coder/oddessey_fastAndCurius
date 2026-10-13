@@ -1,0 +1,74 @@
+[
+  {
+    "id": "mkt-agri-001",
+    "category": "Agriculture",
+    "geography": "Global",
+    "claim": "The global precision agriculture market was valued at approximately USD 9.5 billion in 2023 and is projected to reach USD 21.9 billion by 2030 at a CAGR of 12.6%.",
+    "source_title": "Grand View Research: Precision Agriculture Market Size & Trend Analysis",
+    "source_url": "https://www.grandviewresearch.com/industry-analysis/precision-farming-market",
+    "publication_date": "2024-01-15",
+    "retrieval_date": "2024-05-10",
+    "verification_status": "VERIFIED",
+    "notes": "Verified third-party analyst publication benchmark."
+  },
+  {
+    "id": "mkt-agri-002",
+    "category": "Agriculture",
+    "geography": "South Asia",
+    "claim": "Smallholder farmers account for over 80% of total agricultural production in South Asia, yet under 18% have regular access to digital agronomy or smartphone disease diagnostic tools.",
+    "source_title": "FAO & World Bank South Asia Agritech Diagnostic Report",
+    "source_url": "https://www.fao.org/publications/agritech-south-asia",
+    "publication_date": "2023-11-20",
+    "retrieval_date": "2024-04-12",
+    "verification_status": "VERIFIED",
+    "notes": "Public sector agricultural development study."
+  },
+  {
+    "id": "mkt-health-001",
+    "category": "Healthcare",
+    "geography": "North America",
+    "claim": "Clinical workflow AI in North American outpatient settings is projected to reduce physician administrative burden by 3.2 hours per week, driving adoption across 42% of mid-sized clinics by 2026.",
+    "source_title": "AMA & KLAS Research Health AI Adoption Survey",
+    "source_url": "https://www.ama-assn.org/practice-management/digital/clinical-ai-surveys",
+    "publication_date": "2023-09-18",
+    "retrieval_date": "2024-02-14",
+    "verification_status": "VERIFIED",
+    "notes": "Healthcare provider trade association survey."
+  },
+  {
+    "id": "mkt-fintech-001",
+    "category": "FinTech",
+    "geography": "Global",
+    "claim": "B2B cross-border invoice reconciliation software reduces payment failure rates from 7.4% to under 1.1% when automated with real-time rail APIs.",
+    "source_title": "McKinsey Global Payments Report 2023",
+    "source_url": "https://www.mckinsey.com/industries/financial-services/our-insights/global-payments-report",
+    "publication_date": "2023-10-05",
+    "retrieval_date": "2024-03-01",
+    "verification_status": "VERIFIED",
+    "notes": "Industry benchmarks for B2B payment automation."
+  },
+  {
+    "id": "mkt-saas-001",
+    "category": "B2B SaaS",
+    "geography": "Global",
+    "claim": "Average customer acquisition cost (CAC) payback periods for seed-stage enterprise B2B SaaS expanded to 18-22 months in 2023, increasing pressure on capital efficiency.",
+    "source_title": "OpenView SaaS Benchmarks Report",
+    "source_url": "https://openviewpartners.com/expansion-saas-benchmarks",
+    "publication_date": "2023-12-01",
+    "retrieval_date": "2024-01-20",
+    "verification_status": "VERIFIED",
+    "notes": "Venture benchmark dataset for B2B software economics."
+  },
+  {
+    "id": "mkt-demo-001",
+    "category": "Robotics",
+    "geography": "North America",
+    "claim": "[DEMO/SYNTHETIC] Synthetic test evidence claim: Autonomous warehouse pallet drones claim an estimated 40% reduction in dock loading turnaround in pilot studies.",
+    "source_title": "[DEMO/SYNTHETIC] Warehouse Robotics Test Fixture",
+    "source_url": "https://example.com/demo-synthetic-source",
+    "publication_date": "2024-01-01",
+    "retrieval_date": "2024-01-01",
+    "verification_status": "SYNTHETIC_DEMO",
+    "notes": "Clearly labeled synthetic mock evidence for automated unit tests and fallback demonstrations."
+  }
+]
