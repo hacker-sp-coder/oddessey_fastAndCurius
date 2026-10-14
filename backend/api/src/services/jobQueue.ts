@@ -1,5 +1,8 @@
+import fs from 'fs';
+import path from 'path';
 import { getDatabase } from '../db/database.js';
 import { aiServiceClient } from './aiServiceClient.js';
+import { config } from '../config.js';
 import { PitchRecord } from '../types/index.js';
 
 class JobQueue {
@@ -45,9 +48,21 @@ class JobQueue {
         pitchId
       );
 
+      // Resolve file path across host and container mount points if needed
+      let filePath = pitch.stored_file_path || undefined;
+      if (filePath) {
+        if (!fs.existsSync(filePath)) {
+          const candidate = path.join(config.uploadDir, path.basename(filePath));
+          if (fs.existsSync(candidate)) {
+            filePath = candidate;
+            db.prepare('UPDATE pitches SET stored_file_path = ? WHERE id = ?').run(filePath, pitchId);
+          }
+        }
+      }
+
       // Ingest through AI service
       const ingestRes = await aiServiceClient.ingest({
-        filePath: pitch.stored_file_path || undefined,
+        filePath,
         inputType: pitch.input_type,
         manualTranscript: pitch.original_transcript || undefined
       });
@@ -88,43 +103,47 @@ class JobQueue {
         });
 
         if (transRes.success && transRes.transcript) {
-          db.prepare(
-            `UPDATE pitches 
-             SET status = 'TRANSCRIPTION_READY', 
-                 original_transcript = ?, 
-                 normalized_transcript = ?, 
-                 detected_language = ?, 
-                 error_message = NULL,
-                 updated_at = ? 
-             WHERE id = ?`
-          ).run(
-            transRes.transcript,
-            transRes.transcript,
-            transRes.detected_language || 'en',
-            new Date().toISOString(),
-            pitchId
-          );
+          if (db.open) {
+            db.prepare(
+              `UPDATE pitches 
+               SET status = 'TRANSCRIPTION_READY', 
+                   original_transcript = ?, 
+                   normalized_transcript = ?, 
+                   detected_language = ?, 
+                   error_message = NULL,
+                   updated_at = ? 
+               WHERE id = ?`
+            ).run(
+              transRes.transcript,
+              transRes.transcript,
+              transRes.detected_language || 'en',
+              new Date().toISOString(),
+              pitchId
+            );
+          }
         } else {
-          // Transcription unavailable or disabled; guide user to paste/edit transcript
-          db.prepare(
-            `UPDATE pitches 
-             SET status = 'TRANSCRIPTION_READY', 
-                 original_transcript = '', 
-                 normalized_transcript = '', 
-                 error_message = ?, 
-                 updated_at = ? 
-             WHERE id = ?`
-          ).run(
-            transRes.error_message || 'Automatic transcription unavailable. Please supply or paste transcript below to proceed.',
-            new Date().toISOString(),
-            pitchId
-          );
+          // Real failure: mark status as FAILED with actionable error so user can retry or enter transcript
+          if (db.open) {
+            db.prepare(
+              `UPDATE pitches 
+               SET status = 'FAILED', 
+                   error_message = ?, 
+                   updated_at = ? 
+               WHERE id = ?`
+            ).run(
+              transRes.error_message || 'Automatic transcription failed. You can retry transcription or enter a manual transcript.',
+              new Date().toISOString(),
+              pitchId
+            );
+          }
         }
       }
     } catch (err: any) {
-      db.prepare(
-        "UPDATE pitches SET status = 'FAILED', error_message = ?, updated_at = ? WHERE id = ?"
-      ).run(err.message || 'Unexpected processing failure', new Date().toISOString(), pitchId);
+      if (db && db.open) {
+        db.prepare(
+          "UPDATE pitches SET status = 'FAILED', error_message = ?, updated_at = ? WHERE id = ?"
+        ).run(err.message || 'Unexpected processing failure', new Date().toISOString(), pitchId);
+      }
     }
   }
 }

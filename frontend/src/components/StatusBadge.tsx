@@ -13,7 +13,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
         return <Clock size={12} />;
       case 'PROCESSING':
       case 'ANALYZING':
-        return <RefreshCw size={12} style={{ animation: 'spin 1.5s linear infinite' }} />;
+        return <RefreshCw size={12} className="icon-spin" />;
       case 'TRANSCRIPTION_READY':
         return <FileText size={12} />;
       case 'COMPLETED':
@@ -30,22 +30,37 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
       case 'QUEUED':
         return 'Queued';
       case 'PROCESSING':
-        return 'Extracting Media';
+        return 'Processing Media';
       case 'TRANSCRIPTION_READY':
         return 'Transcript Ready';
       case 'ANALYZING':
-        return 'Analyzing Viability';
+        return 'Evaluating Viability';
       case 'COMPLETED':
-        return 'Analysis Complete';
+        return 'Completed';
       case 'FAILED':
-        return 'Action Required';
+        return 'Failed';
       default:
         return status;
     }
   };
 
+  const getCssClass = () => {
+    switch (status) {
+      case 'COMPLETED':
+        return 'badge-completed';
+      case 'PROCESSING':
+      case 'ANALYZING':
+      case 'TRANSCRIPTION_READY':
+        return 'badge-processing';
+      case 'FAILED':
+        return 'badge-failed';
+      default:
+        return 'badge-queued';
+    }
+  };
+
   return (
-    <span className={`badge badge-${status}`}>
+    <span className={`badge ${getCssClass()}`}>
       {getIcon()}
       <span>{getLabel()}</span>
     </span>

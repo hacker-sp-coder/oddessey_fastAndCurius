@@ -20,6 +20,14 @@ export interface TranscribeResult {
   error_message?: string;
 }
 
+export interface InferredMetadata {
+  startup_name?: string;
+  industry?: string;
+  target_geography?: string;
+  confidence: number;
+  inferred: boolean;
+}
+
 export interface EvaluateResult {
   rubric_version: string;
   evaluation_provider: string;
@@ -35,6 +43,7 @@ export interface EvaluateResult {
   confidence_score: number;
   confidence_limitations: string;
   is_demo: boolean;
+  inferred_metadata?: InferredMetadata;
   created_at: string;
 }
 
@@ -147,6 +156,8 @@ export class AiServiceClient {
     targetGeography?: string;
     industry?: string;
     providerOverride?: string;
+    allowFallback?: boolean;
+    isDemo?: boolean;
   }): Promise<EvaluateResult> {
     const res = await fetch(`${this.baseUrl}/evaluate`, {
       method: 'POST',
@@ -156,7 +167,9 @@ export class AiServiceClient {
         startup_name: params.startupName,
         target_geography: params.targetGeography,
         industry: params.industry,
-        provider_override: params.providerOverride
+        provider_override: params.providerOverride,
+        allow_fallback: params.allowFallback ?? false,
+        is_demo: params.isDemo ?? false
       }),
       signal: AbortSignal.timeout(60000)
     });

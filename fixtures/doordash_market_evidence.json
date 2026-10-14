@@ -1,0 +1,79 @@
+[
+  {
+    "id": "mkt-doordash-001",
+    "category": "Business model context",
+    "geography": "North America",
+    "claim": "DoorDash operates a local commerce marketplace connecting consumers, merchants, and delivery workers.",
+    "source_title": "",
+    "source_url": "",
+    "publication_date": null,
+    "retrieval_date": null,
+    "notes": "This describes the marketplace structure used for the demonstration. It is not an independently verified external market finding."
+  },
+  {
+    "id": "mkt-doordash-002",
+    "category": "Market opportunity hypothesis",
+    "geography": "North America",
+    "claim": "Demand for convenient food ordering and local delivery provides a potential market opportunity.",
+    "source_title": "",
+    "source_url": "",
+    "publication_date": null,
+    "retrieval_date": null,
+    "notes": "This is a hypothesis to investigate, not proof of current market size, growth, or customer demand."
+  },
+  {
+    "id": "mkt-doordash-003",
+    "category": "Revenue model",
+    "geography": "North America",
+    "claim": "Potential revenue sources include merchant commissions, customer delivery or service fees, and subscription offerings.",
+    "source_title": "",
+    "source_url": "",
+    "publication_date": null,
+    "retrieval_date": null,
+    "notes": "These are business-model categories for the demo. Do not present them as verified current financial figures or as a complete description of DoorDash's actual revenue mix."
+  },
+  {
+    "id": "mkt-doordash-004",
+    "category": "Competitive landscape",
+    "geography": "North America",
+    "claim": "Food delivery marketplaces face competition from other delivery platforms, merchant-owned ordering channels, and direct pickup options.",
+    "source_title": "",
+    "source_url": "",
+    "publication_date": null,
+    "retrieval_date": null,
+    "notes": "This identifies competitor categories for evaluation. Do not invent market shares or numerical competitor comparisons."
+  },
+  {
+    "id": "mkt-doordash-005",
+    "category": "Unit economics",
+    "geography": "North America",
+    "claim": "Marketplace viability depends on order frequency, contribution margin per order, delivery costs, customer acquisition cost, retention, and merchant economics.",
+    "source_title": "",
+    "source_url": "",
+    "publication_date": null,
+    "retrieval_date": null,
+    "notes": "These are the metrics an analyst should investigate. No numerical performance is asserted."
+  },
+  {
+    "id": "mkt-doordash-006",
+    "category": "Business risks",
+    "geography": "North America",
+    "claim": "Relevant risks include thin order-level margins, delivery operating costs, customer retention, competition, and regulatory or worker-classification requirements.",
+    "source_title": "",
+    "source_url": "",
+    "publication_date": null,
+    "retrieval_date": null,
+    "notes": "These are evaluation considerations, not a claim that any specific risk has been independently quantified."
+  },
+  {
+    "id": "mkt-doordash-007",
+    "category": "Missing evidence",
+    "geography": "North America",
+    "claim": "The demo does not supply independently verified market size, regional penetration, current competitor market shares, customer acquisition costs, or contribution-margin figures.",
+    "source_title": "",
+    "source_url": "",
+    "publication_date": null,
+    "retrieval_date": null,
+    "notes": "These gaps should be explicitly visible to demonstrate that PitchLens distinguishes hypotheses from supporting evidence."
+  }
+]

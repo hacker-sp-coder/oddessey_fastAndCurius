@@ -1,6 +1,6 @@
-# ScreenAI — AI Idea Screening (Hackathon MVP)
+# PitchLens — Startup Pitch Intelligence & Screening Workspace
 
-**ScreenAI** is an AI startup screening and triage platform that ingests multimodal pitches (video, audio, PDF, and text), extracts core claims, and produces an **explainable 7-dimension startup viability assessment** cross-referenced with empirical market benchmarks.
+**PitchLens** is an evidence-first startup screening and viability research workspace that ingests multimodal pitches (video, audio, PDF, and text), extracts core claims, and produces an **explainable 7-dimension startup viability assessment** cross-referenced with empirical market benchmarks.
 
 Built for rapid MVP execution, it functions completely offline without requiring a dedicated GPU or live AI credentials, while offering pluggable adapters for hosted Groq models (LLaMA 3.3 & Whisper) and local Faster-Whisper on NVIDIA GPU hardware.
 

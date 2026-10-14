@@ -1,12 +1,12 @@
 # Hackathon MVP Demo Workflow & Presentation Script
 
-This document details the exact walk-through for demonstrating **ScreenAI** to judges or evaluators.
+This document details the exact walk-through for demonstrating **PitchLens** to judges or evaluators.
 
 ---
 
 ## 1. Demo Objectives
 
-1. Demonstrate that ScreenAI works **end-to-end today** without GPU hardware or external AI API keys.
+1. Demonstrate that PitchLens works **end-to-end today** without GPU hardware or external AI API keys.
 2. Show the difference between unverified pitch claims and third-party verified market benchmarks.
 3. Show that the rubric is transparent, versioned, explainable, and includes transcript citations.
 4. Demonstrate real file ingestion across PDF, plain text, and media uploads.

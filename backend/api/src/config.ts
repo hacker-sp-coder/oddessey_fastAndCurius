@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 function resolvePath(envVal: string | undefined, defaultRel: string): string {
+  if (envVal === ':memory:') return ':memory:';
   if (envVal) {
     return path.isAbsolute(envVal) ? envVal : path.resolve(process.cwd(), envVal);
   }

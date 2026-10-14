@@ -65,11 +65,33 @@ export const api = {
     return data.pitch;
   },
 
-  async analyzePitch(id: string, provider_override?: string): Promise<AnalysisRecord> {
+  async updatePitchMetadata(id: string, metadata: {
+    startup_name?: string;
+    industry?: string;
+    target_geography?: string;
+  }): Promise<PitchRecord> {
+    const res = await fetch(`${API_BASE_URL}/pitches/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(metadata)
+    });
+    const data = await handleResponse<{ pitch: PitchRecord }>(res);
+    return data.pitch;
+  },
+
+  async retryPitch(id: string): Promise<PitchRecord> {
+    const res = await fetch(`${API_BASE_URL}/pitches/${id}/retry`, {
+      method: 'POST'
+    });
+    const data = await handleResponse<{ pitch: PitchRecord }>(res);
+    return data.pitch;
+  },
+
+  async analyzePitch(id: string, provider_override?: string, force_reanalyze?: boolean): Promise<AnalysisRecord> {
     const res = await fetch(`${API_BASE_URL}/pitches/${id}/analyze`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ provider_override })
+      body: JSON.stringify({ provider_override, force_reanalyze })
     });
     const data = await handleResponse<{ analysis: AnalysisRecord }>(res);
     return data.analysis;
@@ -87,8 +109,9 @@ export const api = {
     return await handleResponse<{ success: boolean; message: string }>(res);
   },
 
-  async seedDemoPitch(): Promise<PitchWithAnalysis> {
-    const res = await fetch(`${API_BASE_URL}/pitches/demo`, {
+  async seedDemoPitch(demoType?: string): Promise<PitchWithAnalysis> {
+    const url = demoType ? `${API_BASE_URL}/pitches/demo?type=${encodeURIComponent(demoType)}` : `${API_BASE_URL}/pitches/demo`;
+    const res = await fetch(url, {
       method: 'POST'
     });
     return await handleResponse<PitchWithAnalysis>(res);
@@ -102,5 +125,13 @@ export const api = {
   async getCapabilities(): Promise<SystemCapabilities> {
     const res = await fetch(`${API_BASE_URL}/health/capabilities`);
     return await handleResponse<SystemCapabilities>(res);
+  },
+
+  async checkHealth(): Promise<any> {
+    return this.getHealth();
+  },
+
+  async fetchCapabilities(): Promise<SystemCapabilities> {
+    return this.getCapabilities();
   }
 };

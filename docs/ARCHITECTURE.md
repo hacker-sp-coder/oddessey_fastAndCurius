@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-**ScreenAI** is an AI Idea Screening platform built as a modular monorepo. It accepts startup pitches across multimodal formats (video, audio, PDF decks, plain text, and manual transcripts) and evaluates their commercial and technical viability against an explainable 7-dimension rubric supported by empirical market evidence.
+**PitchLens** is a startup screening and intelligence workspace built as a modular monorepo. It accepts startup pitches across multimodal formats (video, audio, PDF decks, plain text, and manual transcripts) and evaluates their commercial and technical viability against an explainable 7-dimension rubric supported by empirical market evidence.
 
 The platform is designed to operate completely offline without requiring a dedicated GPU or live AI API keys for the test suite or baseline demo mode, while seamlessly upgrading to hosted Groq LLMs or local CUDA GPU Faster-Whisper when credentials and hardware become available.
 

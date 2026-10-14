@@ -5,10 +5,10 @@ WORKDIR /app
 
 # Install build essentials for native better-sqlite3 compilation
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 \
-    make \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
+  python3 \
+  make \
+  g++ \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json* tsconfig.json ./
 RUN npm ci || npm install
@@ -23,8 +23,8 @@ WORKDIR /app
 
 # Install curl for container health check
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+  curl \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY package.json package-lock.json* tsconfig.json ./
 COPY --from=builder /app/node_modules ./node_modules
@@ -44,7 +44,7 @@ ENV FIXTURES_DIR=/app/fixtures
 
 EXPOSE 4000
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:4000/api/health || exit 1
 
 CMD ["node", "dist/index.js"]

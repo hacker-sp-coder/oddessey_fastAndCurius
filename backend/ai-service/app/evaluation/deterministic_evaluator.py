@@ -2,14 +2,15 @@ import re
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 from app.models.rubric import RUBRIC_CRITERIA, RUBRIC_VERSION
-from app.models.schemas import CriterionScore, EvaluationResult
+from app.models.schemas import CriterionScore, EvaluationResult, InferredMetadata
 from app.evaluation.base import BaseEvaluator
+from app.market.base import BaseMarketEvidenceProvider
 from app.market.curated_market import CuratedMarketEvidenceProvider
 
 class DeterministicEvaluator(BaseEvaluator):
     name = "deterministic"
 
-    def __init__(self, market_provider: Optional[CuratedMarketEvidenceProvider] = None):
+    def __init__(self, market_provider: Optional[BaseMarketEvidenceProvider] = None):
         self.market_provider = market_provider or CuratedMarketEvidenceProvider()
 
     def _extract_sentences_or_lines(self, text: str) -> List[str]:
@@ -36,11 +37,39 @@ class DeterministicEvaluator(BaseEvaluator):
         transcript: str,
         startup_name: Optional[str] = None,
         target_geography: Optional[str] = None,
-        industry: Optional[str] = None
+        industry: Optional[str] = None,
+        is_demo: bool = False,
+        allow_fallback: bool = False
     ) -> EvaluationResult:
-        s_name = startup_name or "Startup Pitch"
-        t_geo = target_geography or "Global"
-        ind = industry or "General Tech"
+        inferred = False
+        s_name = startup_name
+        if not s_name or s_name.lower() in ("unknown", "pending pitch", "manual pitch"):
+            # Attempt simple heuristic inference
+            first_words = transcript.strip().split()[:6]
+            s_name = " ".join(first_words) if first_words else "Unknown"
+            inferred = True
+
+        ind = industry
+        if not ind or ind.lower() == "unknown":
+            if any(w in transcript.lower() for w in ["crop", "farm", "agriculture", "soil"]):
+                ind = "Agriculture"
+            elif any(w in transcript.lower() for w in ["patient", "clinic", "health", "medical"]):
+                ind = "Healthcare"
+            elif any(w in transcript.lower() for w in ["payment", "bank", "invoice", "fintech"]):
+                ind = "FinTech"
+            else:
+                ind = "Unknown"
+            inferred = True
+
+        t_geo = target_geography
+        if not t_geo or t_geo.lower() == "unknown":
+            if any(w in transcript.lower() for w in ["asia", "india", "vietnam", "indonesia"]):
+                t_geo = "South Asia"
+            elif any(w in transcript.lower() for w in ["us", "north america", "california", "europe"]):
+                t_geo = "North America"
+            else:
+                t_geo = "Unknown"
+            inferred = True
         
         lines = self._extract_sentences_or_lines(transcript)
         text_lower = transcript.lower()
@@ -190,11 +219,18 @@ class DeterministicEvaluator(BaseEvaluator):
 
         overall_score = round(total_weighted, 1)
 
-        # Retrieve market evidence
-        market_res = self.market_provider.search_evidence(
-            category=ind,
-            geography=t_geo
-        )
+        # Retrieve market evidence with error resilience
+        market_items = []
+        try:
+            market_res = self.market_provider.search_evidence(
+                category=ind,
+                geography=t_geo,
+                query=s_name,
+                is_demo=is_demo
+            )
+            market_items = market_res.items
+        except Exception:
+            market_items = []
 
         strengths = [
             f"Explicit problem articulation with {prob_score:.0f}/100 clarity on customer pain severity.",
@@ -239,12 +275,19 @@ class DeterministicEvaluator(BaseEvaluator):
             assumptions=assumptions,
             missing_information=missing_info,
             founder_questions=founder_questions,
-            market_evidence=market_res.items,
+            market_evidence=market_items,
             confidence_score=0.82,
             confidence_limitations=(
                 "Preliminary screening score calculated using rule-based rubric. "
                 "This heuristic assessment is an initial triage aid and is NOT a statistically validated prediction of startup success."
             ),
-            is_demo=False,
+            is_demo=is_demo,
+            inferred_metadata=InferredMetadata(
+                startup_name=s_name,
+                industry=ind,
+                target_geography=t_geo,
+                confidence=0.75 if inferred else 1.0,
+                inferred=inferred
+            ),
             created_at=datetime.now(timezone.utc).isoformat()
         )

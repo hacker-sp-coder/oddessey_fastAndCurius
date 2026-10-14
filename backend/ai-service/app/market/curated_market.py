@@ -18,23 +18,45 @@ class CuratedMarketEvidenceProvider(BaseMarketEvidenceProvider):
             try:
                 with open(self.data_file, "r", encoding="utf-8") as f:
                     raw_data = json.load(f)
-                    self._items = [MarketEvidenceItem(**item) for item in raw_data]
+                    self._items = [MarketEvidenceItem(**item) for item in raw_data if isinstance(item, dict)]
             except Exception as e:
                 print(f"Warning: could not load market data file {self.data_file}: {e}")
                 self._items = []
         else:
             self._items = []
 
+    def is_available(self) -> bool:
+        return True
+
     def search_evidence(
         self,
         category: Optional[str] = None,
         geography: Optional[str] = None,
-        query: Optional[str] = None
+        query: Optional[str] = None,
+        is_demo: bool = False
     ) -> MarketEvidenceResponse:
-        matched = []
+        matched: List[MarketEvidenceItem] = []
         cat_lower = (category or "").lower().strip()
         geo_lower = (geography or "").lower().strip()
         query_lower = (query or "").lower().strip()
+
+        # Targeted DoorDash demo fixture support
+        if "doordash" in query_lower or "doordash" in cat_lower:
+            dd_fixture = settings.fixtures_dir / "doordash_market_evidence.json"
+            if dd_fixture.exists():
+                try:
+                    with open(dd_fixture, "r", encoding="utf-8") as f:
+                        dd_raw = json.load(f)
+                    dd_items = [MarketEvidenceItem(**item) for item in dd_raw if isinstance(item, dict)]
+                    return MarketEvidenceResponse(
+                        items=dd_items,
+                        gaps_identified=[
+                            "The demo does not supply independently verified market size, regional penetration, current competitor market shares, customer acquisition costs, or contribution-margin figures."
+                        ],
+                        provider_status="synthetic_demo_fixture"
+                    )
+                except Exception as e:
+                    print(f"Warning: could not load DoorDash fixture: {e}")
 
         for item in self._items:
             item_cat = item.category.lower()
@@ -46,11 +68,17 @@ class CuratedMarketEvidenceProvider(BaseMarketEvidenceProvider):
             match_query = not query_lower or (query_lower in item_claim or query_lower in item_cat)
 
             if match_cat and (match_geo or match_query):
-                matched.append(item)
+                evidence_item = item.model_copy()
+                # Ensure synthetic mock evidence retains SYNTHETIC_DEMO tag
+                if "[demo/synthetic]" in evidence_item.claim.lower() or evidence_item.verification_status == "SYNTHETIC_DEMO":
+                    evidence_item.verification_status = "SYNTHETIC_DEMO"
+                matched.append(evidence_item)
 
         gaps = []
         if not matched:
-            gaps.append(f"No curated market evidence benchmarks found for industry '{category}' in geography '{geography}'.")
+            gaps.append(
+                f"No curated market evidence benchmarks found for industry '{category}' in geography '{geography}'."
+            )
         else:
             verified_count = sum(1 for m in matched if m.verification_status == "VERIFIED")
             if verified_count == 0:
@@ -58,5 +86,6 @@ class CuratedMarketEvidenceProvider(BaseMarketEvidenceProvider):
 
         return MarketEvidenceResponse(
             items=matched,
-            gaps_identified=gaps
+            gaps_identified=gaps,
+            provider_status="curated_local"
         )

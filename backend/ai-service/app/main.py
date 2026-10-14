@@ -32,8 +32,8 @@ from app.evaluation.groq_evaluator import GroqEvaluator
 from app.market.curated_market import CuratedMarketEvidenceProvider
 
 app = FastAPI(
-    title="AI Idea Screening - AI Service",
-    description="Document/media ingestion, transcription, evaluation, and market evidence service.",
+    title="PitchLens — AI Screening Service",
+    description="PitchLens document/media ingestion, transcription, 7-dimension viability evaluation, and market evidence service.",
     version="1.0.0"
 )
 
@@ -61,11 +61,14 @@ fallback_translator = FallbackTranslationProvider()
 
 @app.get("/health", response_model=HealthResponse)
 def get_health():
+    whisper_diag = whisper_transcriber.get_hardware_diagnostics()
     return HealthResponse(
         status="ok",
         service="ai-service",
         version="1.0.0",
-        ffmpeg_available=is_ffmpeg_available()
+        ffmpeg_available=is_ffmpeg_available(),
+        cuda_available=whisper_diag.get("cuda_available", False),
+        gpu_device_name=whisper_diag.get("gpu_name")
     )
 
 
@@ -74,6 +77,16 @@ def get_capabilities():
     ffmpeg_ok = is_ffmpeg_available()
     ffmpeg_ver = get_ffmpeg_version()
     whisper_diag = whisper_transcriber.get_hardware_diagnostics()
+
+    gpu_label = whisper_diag.get("gpu_name") or ("NVIDIA GPU" if whisper_diag.get("gpu_detected") else "No GPU detected")
+    cuda_ready = whisper_diag.get("cuda_available", False)
+    fw_installed = whisper_diag.get("faster_whisper_installed", False)
+    model_loaded = whisper_diag.get("model_loaded_in_memory", False)
+    active_device = whisper_diag.get("active_device")
+
+    fw_state_label = f"Model loaded ({active_device})" if model_loaded else "Model not loaded (lazy init)"
+    cuda_state_label = "CUDA inference ready" if cuda_ready else ("GPU detected without CUDA runtime" if whisper_diag.get("gpu_detected") else "CUDA unavailable (CPU safe)")
+    fallback_label = "CPU fallback enabled" if settings.whisper_cpu_fallback else "CPU fallback disabled"
 
     transcription_providers = [
         ProviderCapability(
@@ -92,13 +105,14 @@ def get_capabilities():
         ),
         ProviderCapability(
             name="faster-whisper",
-            available=whisper_transcriber.is_available(),
-            requires_gpu=False,
+            available=fw_installed,
+            requires_gpu=(settings.whisper_device.lower() == "cuda"),
             requires_api_key=False,
             details=(
-                f"Local Faster-Whisper. Device={settings.whisper_device}, "
-                f"Model={settings.whisper_model_size}, Compute={settings.whisper_compute_type}. "
-                f"Installed={whisper_diag['faster_whisper_installed']}."
+                f"Local Faster-Whisper ({settings.whisper_model_size}). "
+                f"Hardware: {gpu_label} [{cuda_state_label}]. "
+                f"Config: Device={settings.whisper_device}, Precision={settings.whisper_compute_type}. "
+                f"Status: {fw_state_label}. {fallback_label}."
             )
         )
     ]
@@ -120,14 +134,27 @@ def get_capabilities():
         )
     ]
 
+    research_providers = [
+        ProviderCapability(
+            name="curated_local",
+            available=True,
+            requires_gpu=False,
+            requires_api_key=False,
+            details="Curated local analyst benchmarks (Grand View Research, FAO, World Bank, McKinsey, OpenView) with verified provenance."
+        )
+    ]
+
     return CapabilitiesResponse(
         ffmpeg_available=ffmpeg_ok,
         ffmpeg_version=ffmpeg_ver,
-        cuda_available=whisper_diag.get("cuda_available", False),
+        cuda_available=cuda_ready,
         transcription_providers=transcription_providers,
         evaluation_providers=evaluation_providers,
+        research_providers=research_providers,
         active_transcription_provider=settings.transcription_provider,
-        active_evaluation_provider=settings.evaluation_provider
+        active_evaluation_provider=settings.evaluation_provider,
+        active_research_provider="curated_local",
+        hardware_diagnostics=whisper_diag
     )
 
 
@@ -148,7 +175,15 @@ def ingest_media_or_document(req: IngestRequest):
 
     path = Path(req.file_path)
     if not path.is_file():
-        raise HTTPException(status_code=404, detail=f"File not found: {req.file_path}")
+        # Fallback candidate checks across host and Docker container storage paths
+        cand1 = Path("storage/uploads") / path.name
+        cand2 = Path("/app/storage/uploads") / path.name
+        if cand1.is_file():
+            path = cand1
+        elif cand2.is_file():
+            path = cand2
+        else:
+            raise HTTPException(status_code=404, detail=f"File not found: {req.file_path}")
 
     ext = path.suffix.lower()
 
@@ -263,21 +298,41 @@ def evaluate_pitch(req: EvaluationRequest):
     provider_name = req.provider_override or settings.evaluation_provider
     evaluator = groq_evaluator if provider_name == "groq" else deterministic_evaluator
 
-    result = evaluator.evaluate(
-        transcript=req.transcript,
-        startup_name=req.startup_name,
-        target_geography=req.target_geography,
-        industry=req.industry
-    )
-
-    return result
+    try:
+        result = evaluator.evaluate(
+            transcript=req.transcript,
+            startup_name=req.startup_name,
+            target_geography=req.target_geography,
+            industry=req.industry,
+            is_demo=req.is_demo,
+            allow_fallback=req.allow_fallback
+        )
+        return result
+    except RuntimeError as err:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=str(err)
+        )
+    except Exception as err:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Evaluation execution failed: {str(err)}"
+        )
 
 
 @app.post("/market-evidence", response_model=MarketEvidenceResponse)
 def query_market_evidence(req: MarketEvidenceRequest):
-    res = market_provider.search_evidence(
-        category=req.category,
-        geography=req.geography,
-        query=req.query
-    )
-    return res
+    try:
+        res = market_provider.search_evidence(
+            category=req.category,
+            geography=req.geography,
+            query=req.query,
+            is_demo=req.is_demo
+        )
+        return res
+    except Exception as err:
+        return MarketEvidenceResponse(
+            items=[],
+            gaps_identified=[f"External research query failed ({type(err).__name__}): {str(err)}"],
+            provider_status="error"
+        )

@@ -4,7 +4,7 @@ import { LayoutDashboard, PlusCircle, History, Activity, Sparkles } from 'lucide
 interface NavbarProps {
   currentTab: string;
   onSelectTab: (tab: string) => void;
-  onSeedDemo: () => void;
+  onSeedDemo: (demoType?: string) => void;
   isSeedingDemo?: boolean;
 }
 
@@ -25,11 +25,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             onSelectTab('dashboard');
           }}
         >
-          <div className="brand-icon">S</div>
+          <div className="brand-icon">P</div>
           <div>
-            <span className="brand-text">ScreenAI</span>
+            <span className="brand-text">PitchLens</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '1px' }}>
-              <span className="brand-badge">MVP Edition</span>
+              <span className="brand-badge">Analyst Workspace</span>
             </div>
           </div>
         </a>
@@ -69,13 +69,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             className="btn btn-secondary"
-            style={{ padding: '0.4rem 0.85rem', fontSize: '0.85rem', borderColor: 'var(--accent-cyan)' }}
-            onClick={onSeedDemo}
+            style={{ padding: '0.4rem 0.85rem', fontSize: '0.85rem', borderColor: 'var(--color-synthetic)' }}
+            onClick={() => onSeedDemo('doordash')}
             disabled={isSeedingDemo}
-            title="Load instant pre-computed demo evaluation (AgriScan AI)"
+            title="Load DoorDash YC S13 demo pitch with synthetic market evidence"
           >
-            <Sparkles size={14} style={{ color: 'var(--accent-cyan)' }} />
-            <span>{isSeedingDemo ? 'Loading...' : 'Demo Pitch'}</span>
+            <Sparkles size={14} style={{ color: 'var(--color-synthetic)' }} />
+            <span>{isSeedingDemo ? 'Loading...' : 'DoorDash Demo'}</span>
           </button>
         </div>
       </div>

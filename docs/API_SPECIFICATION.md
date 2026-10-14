@@ -102,7 +102,25 @@ Retrieves a single pitch record and its processing status.
 - **Response (200 OK):** `{ "pitch": PitchRecord }`
 - **Error (404 Not Found):** `{ "error": "Pitch not found" }`
 
-### 1.6 `POST /api/pitches/:id/transcript`
+### 1.6 `PATCH /api/pitches/:id`
+Updates startup metadata (startup name, geography, industry) on an existing pitch.
+- **Request Body:**
+```json
+{
+  "startup_name": "AgriScan AI",
+  "target_geography": "South Asia",
+  "industry": "Agriculture"
+}
+```
+- **Response (200 OK):** `{ "pitch": PitchRecord }`
+- **Error (404 Not Found):** `{ "error": "Pitch not found" }`
+
+### 1.7 `POST /api/pitches/:id/retry`
+Retries failed media ingestion and transcription for a pitch that encountered an error. Resets the status to `PROCESSING` and re-enqueues the job.
+- **Response (200 OK):** `{ "pitch": PitchRecord, "message": "Transcription job re-enqueued successfully" }`
+- **Error (400 Bad Request):** `{ "error": "Cannot retry a pitch that is not in FAILED state" }`
+
+### 1.8 `POST /api/pitches/:id/transcript`
 Allows the user to supply or revise the pitch transcript before running analysis.
 - **Request Body:**
 ```json
@@ -112,18 +130,19 @@ Allows the user to supply or revise the pitch transcript before running analysis
 ```
 - **Response (200 OK):** `{ "pitch": PitchRecord }`
 
-### 1.7 `POST /api/pitches/:id/analyze`
-Triggers viability analysis on the saved transcript.
+### 1.9 `POST /api/pitches/:id/analyze`
+Triggers viability analysis on the saved transcript using the primary LLM (Groq `qwen/qwen3.8-27b`). If a report already exists and `force_reanalyze` is not set, returns the cached analysis without unnecessary LLM calls.
 - **Request Body (optional):**
 ```json
 {
-  "provider_override": "deterministic"
+  "provider_override": "groq",
+  "force_reanalyze": false
 }
 ```
 - **Response (200 OK):** `{ "analysis": AnalysisRecord }`
 - **Error (400 Bad Request):** `{ "error": "Cannot analyze pitch without a valid transcript." }`
 
-### 1.8 `GET /api/pitches/:id/report`
+### 1.10 `GET /api/pitches/:id/report`
 Retrieves the pitch record paired with its completed analysis record.
 - **Response (200 OK):**
 ```json
@@ -133,12 +152,12 @@ Retrieves the pitch record paired with its completed analysis record.
 }
 ```
 
-### 1.9 `DELETE /api/pitches/:id`
+### 1.11 `DELETE /api/pitches/:id`
 Deletes a pitch record, its analysis record, and unlinks the uploaded file from disk.
 - **Response (200 OK):** `{ "success": true, "message": "Pitch and associated files deleted successfully." }`
 
-### 1.10 `POST /api/pitches/demo`
-Seeds the bundled `fixtures/demo_pitch.json` fixture into the database and returns the completed report immediately.
+### 1.12 `POST /api/pitches/demo`
+Seeds the bundled `fixtures/demo_pitch.json` fixture into the database and returns the completed report immediately with `SYNTHETIC_DEMO` provenance.
 - **Response (200 OK):** `{ "pitch": PitchRecord, "analysis": AnalysisRecord }`
 
 ---
@@ -187,35 +206,40 @@ Transcribes audio using the selected provider (`groq`, `faster-whisper`, or `fal
 ```
 
 ### 2.5 `POST /evaluate`
-Evaluates viability against the versioned 7-dimension rubric and merges market evidence.
+Evaluates viability against the versioned 7-dimension rubric using the Groq LLM (or deterministic fallback if explicitly requested). Infers missing metadata (`startup_name`, `industry`, `target_geography`) and extracts market claims with honest provenance.
 - **Request Body:**
 ```json
 {
   "transcript": "...",
   "startup_name": "AgriScan AI",
   "target_geography": "South Asia",
-  "industry": "Agriculture"
+  "industry": "Agriculture",
+  "is_demo": false
 }
 ```
-- **Response (200 OK):** Validated `EvaluationResult` JSON.
+- **Response (200 OK):** Validated `EvaluationResult` JSON including:
+  - `overall_score`, `recommendation`, `confidence`
+  - `criteria_scores` (7 dimensions with detailed rationales, key quotes, missing info)
+  - `strengths`, `risks`, `assumptions`, `founder_questions`
+  - `market_context`: honest benchmarks and unverified pitch claims
+  - `inferred_metadata`: `{ "startup_name": "...", "industry": "...", "target_geography": "..." }`
+  - `evaluation_provider`: `"groq"` or `"deterministic"`
+  - `model_identifier`: `"qwen/qwen3.8-27b"`
+  - `limitations`: explicit disclosure of evaluation caveats and unverified external data
 
 ### 2.6 `POST /market-evidence`
-Searches curated market benchmarks and identifies evidence gaps.
-- **Request Body:** `{ "category": "Agriculture", "geography": "South Asia" }`
+Retrieves market context with rigorous provenance labeling:
+- When `is_demo: false` and no external search API is configured, returns honest gaps noting that external market research is unverified.
+- When `is_demo: true`, returns curated demo benchmarks explicitly tagged `SYNTHETIC_DEMO`.
+- Founder claims extracted from the transcript are labeled `UNVERIFIED_CLAIM`.
+- Supported statuses: `VERIFIED`, `UNVERIFIED_CLAIM`, `UNAVAILABLE`, `SYNTHETIC_DEMO`.
+- **Request Body:** `{ "category": "Agriculture", "geography": "South Asia", "is_demo": false }`
 - **Response (200 OK):**
 ```json
 {
-  "items": [
-    {
-      "id": "mkt-agri-002",
-      "category": "Agriculture",
-      "geography": "South Asia",
-      "claim": "Smallholder farmers account for over 80%...",
-      "source_title": "FAO & World Bank South Asia Agritech Diagnostic Report",
-      "source_url": "https://www.fao.org/publications/agritech-south-asia",
-      "verification_status": "VERIFIED"
-    }
-  ],
-  "gaps_identified": []
+  "items": [],
+  "gaps_identified": [
+    "External market-evidence retrieval is not configured; founder market claims require independent verification."
+  ]
 }
 ```

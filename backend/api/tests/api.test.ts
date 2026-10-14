@@ -158,7 +158,7 @@ describe('Node.js Express API Test Suite', () => {
 
       const res = await request(app)
         .post(`/api/pitches/${createdPitchId}/analyze`)
-        .send({});
+        .send({ force_reanalyze: true });
 
       expect(res.status).toBe(400);
       expect(res.body.error).toContain('AI Service Unavailable');
@@ -190,25 +190,118 @@ describe('Node.js Express API Test Suite', () => {
       expect(res.body.analysis.is_demo).toBe(true);
       expect(res.body.analysis.overall_score).toBeGreaterThan(70);
     });
+
+    it('seeds the DoorDash video demo fixture with 7 deterministic market evidence items', async () => {
+      const res = await request(app).post('/api/pitches/demo').send({ demo_type: 'doordash' });
+      expect(res.status).toBe(200);
+      expect(res.body.pitch).toBeDefined();
+      expect(res.body.analysis).toBeDefined();
+      expect(res.body.pitch.id).toBe('demo-pitch-doordash');
+      expect(res.body.analysis.is_demo).toBe(true);
+      expect(res.body.analysis.market_evidence).toHaveLength(7);
+
+      const syntheticItems = res.body.analysis.market_evidence.filter((i: any) => i.verification_status === 'SYNTHETIC_DEMO');
+      const missingItems = res.body.analysis.market_evidence.filter((i: any) => i.category === 'Missing evidence' || i.verification_status === 'UNAVAILABLE');
+      expect(syntheticItems).toHaveLength(6);
+      expect(missingItems).toHaveLength(1);
+    });
   });
 
   // 5. File Upload Ingestion
   describe('File Upload Flow', () => {
-    it('accepts a plain text pitch file upload', async () => {
+    it('accepts file upload without metadata, defaulting to Unknown and filename', async () => {
       const textBuffer = Buffer.from('Startup pitch: Clean energy battery recycling network.');
       const res = await request(app)
         .post('/api/pitches')
-        .field('startup_name', 'EcoCycle')
-        .field('industry', 'CleanTech')
-        .attach('file', textBuffer, 'pitch_deck.txt');
+        .attach('file', textBuffer, 'my_pitch_deck.txt');
 
       expect(res.status).toBe(201);
       expect(res.body.pitch).toBeDefined();
-      expect(res.body.pitch.input_type).toBe('TEXT');
-      expect(res.body.pitch.stored_file_path).toBeDefined();
+      expect(res.body.pitch.startup_name).toBe('my_pitch_deck');
+      expect(res.body.pitch.industry).toBe('Unknown');
+      expect(res.body.pitch.target_geography).toBe('Unknown');
 
-      // Clean up created pitch
-      await request(app).delete(`/api/pitches/${res.body.pitch.id}`);
+      const pitchId = res.body.pitch.id;
+
+      // Update metadata via PATCH /api/pitches/:id
+      const patchRes = await request(app)
+        .patch(`/api/pitches/${pitchId}`)
+        .send({
+          startup_name: 'EcoCycle Inferred',
+          industry: 'CleanTech',
+          target_geography: 'Europe'
+        });
+
+      expect(patchRes.status).toBe(200);
+      expect(patchRes.body.pitch.startup_name).toBe('EcoCycle Inferred');
+      expect(patchRes.body.pitch.industry).toBe('CleanTech');
+      expect(patchRes.body.pitch.target_geography).toBe('Europe');
+
+      // Test Retry endpoint
+      const retryRes = await request(app).post(`/api/pitches/${pitchId}/retry`);
+      expect(retryRes.status).toBe(200);
+      expect(['QUEUED', 'PROCESSING']).toContain(retryRes.body.pitch.status);
+      expect(retryRes.body.pitch.error_message).toBeNull();
+
+      // Clean up
+      await request(app).delete(`/api/pitches/${pitchId}`);
+    });
+
+    it('rejects empty 0-byte file upload with 400 Bad Request', async () => {
+      const res = await request(app)
+        .post('/api/pitches')
+        .attach('file', Buffer.alloc(0), 'empty_pitch.mp4');
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('empty (0 bytes)');
+    });
+
+    it('returns a clear error when retrying a pitch whose source file is missing from storage', async () => {
+      const db = getDatabase();
+      const fakeId = 'missing-file-pitch-id';
+      db.prepare(`
+        INSERT INTO pitches (
+          id, startup_name, target_geography, industry, original_filename,
+          input_type, mime_type, stored_file_path, file_size, status,
+          created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        fakeId, 'Ghost Startup', 'Global', 'Tech', 'ghost.mp4',
+        'VIDEO', 'video/mp4', 'storage/uploads/non_existent_file.mp4', 1000, 'FAILED',
+        new Date().toISOString(), new Date().toISOString()
+      );
+
+      try {
+        const res = await request(app).post(`/api/pitches/${fakeId}/retry`);
+        expect(res.status).toBe(400);
+        expect(res.body.error).toContain('Original media file is not available on disk');
+      } finally {
+        db.prepare('DELETE FROM pitches WHERE id = ?').run(fakeId);
+      }
+    });
+
+    it('correctly handles and repairs Latin1-encoded UTF-8 filenames (mojibake regression test)', async () => {
+      // Simulate raw UTF-8 Hindi string encoded as Latin1 by multipart parsers
+      const utf8Name = 'Reels बना बना कर खड़ा कर दिया ₹10 Cr का Brand.mp4';
+      const latin1Mojibake = Buffer.from(utf8Name, 'utf8').toString('latin1');
+
+      const textBuffer = Buffer.from('Hindi video pitch content');
+      let pitchIdToDelete: string | null = null;
+      try {
+        const res = await request(app)
+          .post('/api/pitches')
+          .attach('file', textBuffer, latin1Mojibake);
+
+        expect(res.status).toBe(201);
+        expect(res.body.pitch).toBeDefined();
+        if (res.body.pitch?.id) pitchIdToDelete = res.body.pitch.id;
+        expect(res.body.pitch.original_filename).toBe(utf8Name);
+        expect(res.body.pitch.startup_name).toBe('Reels बना बना कर खड़ा कर दिया ₹10 Cr का Brand');
+      } finally {
+        if (pitchIdToDelete) {
+          await request(app).delete(`/api/pitches/${pitchIdToDelete}`);
+        }
+      }
     });
   });
 });

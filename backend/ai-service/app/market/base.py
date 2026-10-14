@@ -10,7 +10,12 @@ class BaseMarketEvidenceProvider(ABC):
         self,
         category: Optional[str] = None,
         geography: Optional[str] = None,
-        query: Optional[str] = None
+        query: Optional[str] = None,
+        is_demo: bool = False
     ) -> MarketEvidenceResponse:
         """Search market evidence by industry category, geography, or query keywords."""
         pass
+
+    def is_available(self) -> bool:
+        """Returns True if the provider is configured and ready for queries."""
+        return True

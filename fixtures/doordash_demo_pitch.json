@@ -1,0 +1,214 @@
+{
+  "pitch": {
+    "id": "demo-pitch-doordash",
+    "startup_name": "DoorDash (YC S13 Demo Pitch)",
+    "target_geography": "North America",
+    "industry": "Food & Beverage Logistics",
+    "original_filename": "vidssave.com DoorDash's Application Video for YC S13 360P.mp4",
+    "input_type": "VIDEO",
+    "mime_type": "video/mp4",
+    "file_size": 1112620,
+    "status": "COMPLETED",
+    "original_transcript": "Hey, I'm Stanley. I'm a Stanford CS major. I did front end engineering at Facebook. Hey, I'm Andy. I'm also a Stanford CS major and I did platform engineering at Facebook. I'm Evan. I was on the founding team of Vevo, the music video service. And I'm Tony. I was a product editor at Square. And the four of us came together about six months ago to work on software for small business owners. But we didn't have a need at first, so we just went on and talked to all the small business owners we could find. After over 100 interviews, we came across a really interesting problem with small business restaurants in an area like this. Palo Alto. Yeah, so it turns out restaurants in Palo Alto don't deliver even though they really want to, but they can't afford it. But their consumers are craving for it, but the places that the consumers love just can't deliver. And we also found out about these delivery drivers who had a ton of spare time and they all wanted an extra cash during that downtime. Right. And so that's when we built an initial product, Palo AltoDelivery.com. And how it worked is the customer goes to the website and places them online order that gets automatically sent to the restaurant. And then we as the dispatchers with some pretty neat routing and batching algorithms, we're able to send the drivers efficiently to get the orders to the customers at a really fast time. Yeah, and the four of us actually started off as delivery drivers. And over time, we hired more as we grew. And in our first month of launch with not much marketing, we got over 150 paying customers in the Palo Alto area, which was really awesome. And from that, we generated over $10,000 in sales.",
+    "normalized_transcript": "Hey, I'm Stanley. I'm a Stanford CS major. I did front end engineering at Facebook. Hey, I'm Andy. I'm also a Stanford CS major and I did platform engineering at Facebook. I'm Evan. I was on the founding team of Vevo, the music video service. And I'm Tony. I was a product editor at Square. And the four of us came together about six months ago to work on software for small business owners. But we didn't have a need at first, so we just went on and talked to all the small business owners we could find. After over 100 interviews, we came across a really interesting problem with small business restaurants in an area like this. Palo Alto. Yeah, so it turns out restaurants in Palo Alto don't deliver even though they really want to, but they can't afford it. But their consumers are craving for it, but the places that the consumers love just can't deliver. And we also found out about these delivery drivers who had a ton of spare time and they all wanted an extra cash during that downtime. Right. And so that's when we built an initial product, Palo AltoDelivery.com. And how it worked is the customer goes to the website and places them online order that gets automatically sent to the restaurant. And then we as the dispatchers with some pretty neat routing and batching algorithms, we're able to send the drivers efficiently to get the orders to the customers at a really fast time. Yeah, and the four of us actually started off as delivery drivers. And over time, we hired more as we grew. And in our first month of launch with not much marketing, we got over 150 paying customers in the Palo Alto area, which was really awesome. And from that, we generated over $10,000 in sales.",
+    "detected_language": "en",
+    "created_at": "2024-10-13T09:00:00.000Z",
+    "updated_at": "2024-10-13T09:02:30.000Z",
+    "error_message": null
+  },
+  "analysis": {
+    "id": "analysis-demo-doordash-001",
+    "pitch_id": "demo-pitch-doordash",
+    "rubric_version": "1.0.0",
+    "evaluation_provider": "deterministic",
+    "evaluation_method": "Deterministic Heuristic Rubric (Rule-Based Fallback)",
+    "overall_score": 78.5,
+    "criteria_scores": {
+      "problem_clarity": {
+        "name": "Problem Clarity",
+        "score": 85,
+        "weight": 15,
+        "weighted_score": 12.75,
+        "rationale": "High clarity on the two-sided friction: suburban restaurants want to deliver but lack delivery infrastructure, while consumers demand doorstep ordering.",
+        "evidence": [
+          "After over 100 interviews, we came across a really interesting problem with small business restaurants... restaurants in Palo Alto don't deliver even though they really want to, but they can't afford it."
+        ],
+        "missing_evidence": "Restaurant kitchen bottleneck capacity during peak hours was not detailed."
+      },
+      "target_customer": {
+        "name": "Target Customer",
+        "score": 80,
+        "weight": 15,
+        "weighted_score": 12.0,
+        "rationale": "Clear target personas on all three sides: local restaurants, hungry local diners, and flexible delivery drivers with downtime.",
+        "evidence": [
+          "And we also found out about these delivery drivers who had a ton of spare time and they all wanted an extra cash during that downtime."
+        ],
+        "missing_evidence": "Customer demographic breakdown outside the Palo Alto suburban test market."
+      },
+      "market_evidence": {
+        "name": "Market Evidence",
+        "score": 75,
+        "weight": 15,
+        "weighted_score": 11.25,
+        "rationale": "First-month pilot proves initial traction with 150 paying customers and $10k sales, supported by synthetic marketplace structure context.",
+        "evidence": [
+          "In our first month of launch with not much marketing, we got over 150 paying customers in the Palo Alto area... generated over $10,000 in sales."
+        ],
+        "missing_evidence": "Verified market size and contribution margin figures are missing from live research."
+      },
+      "solution_feasibility": {
+        "name": "Solution Feasibility",
+        "score": 82,
+        "weight": 15,
+        "weighted_score": 12.3,
+        "rationale": "Working dispatcher web portal with batching and routing algorithms already deployed and functioning.",
+        "evidence": [
+          "We built an initial product, Palo AltoDelivery.com... with some pretty neat routing and batching algorithms, we're able to send the drivers efficiently."
+        ],
+        "missing_evidence": "Scalability of algorithmic batching under heavy multi-restaurant traffic spikes."
+      },
+      "team_founder_fit": {
+        "name": "Team & Founder Fit",
+        "score": 90,
+        "weight": 15,
+        "weighted_score": 13.5,
+        "rationale": "Exceptional technical and product pedigree (Facebook engineering, Square product, Vevo) paired with direct driver experience.",
+        "evidence": [
+          "I'm a Stanford CS major, did frontend engineering at Facebook... did platform engineering at Facebook... founding team of Vevo... product editor at Square. The four of us actually started off as delivery drivers."
+        ],
+        "missing_evidence": "Long-term operational executive experience in logistics fleet management."
+      },
+      "business_model": {
+        "name": "Business Model",
+        "score": 70,
+        "weight": 15,
+        "weighted_score": 10.5,
+        "rationale": "Transaction-based revenue generated from order processing, but contribution margins and fee splits are not detailed.",
+        "evidence": [
+          "We generated over $10,000 in sales in our first month."
+        ],
+        "missing_evidence": "Net margin per order after driver pay and credit card processing fees."
+      },
+      "pitch_delivery": {
+        "name": "Pitch Delivery",
+        "score": 82,
+        "weight": 10,
+        "weighted_score": 8.2,
+        "rationale": "Concise, authentic, high-energy founder delivery demonstrating customer empathy and bias toward action.",
+        "evidence": [
+          "After over 100 interviews, we came across a really interesting problem... the four of us actually started off as delivery drivers."
+        ],
+        "missing_evidence": "Formal slide presentation or multi-year financial forecast."
+      }
+    },
+    "strengths": [
+      "Customer-first discovery: conducted 100+ small business interviews before writing software.",
+      "Immediate product validation: 150 paying customers and $10,000+ GMV in month 1.",
+      "High-caliber Stanford/Silicon Valley technical founding team willing to work in the field as drivers."
+    ],
+    "risks": [
+      "Thin order-level margins and high driver dispatch and retention operating costs.",
+      "Competition from large national delivery platforms and restaurant-direct ordering channels.",
+      "Regulatory risk regarding driver classification and independent contractor laws."
+    ],
+    "assumptions": [
+      "Consumers remain willing to pay convenience delivery premiums across different seasons.",
+      "Small restaurants will continue to outsource deliveries rather than employ in-house drivers."
+    ],
+    "missing_information": [
+      "Contribution margin and net profit per delivery order after driver compensation.",
+      "Customer acquisition cost (CAC) and customer cohort retention decay over 90 days.",
+      "Driver turnover rate and average delivery driver hourly earnings."
+    ],
+    "founder_questions": [
+      "What is your gross contribution margin on an average $25 restaurant order?",
+      "How do your routing and batching algorithms maintain on-time delivery during 6 PM - 8 PM peak restaurant rushes?",
+      "What prevents Grubhub or local courier services from replicating your Palo Alto market presence?"
+    ],
+    "market_evidence": [
+      {
+        "id": "mkt-doordash-001",
+        "category": "Business model context",
+        "geography": "North America",
+        "claim": "DoorDash operates a local commerce marketplace connecting consumers, merchants, and delivery workers.",
+        "source_title": "",
+        "source_url": "",
+        "publication_date": null,
+        "retrieval_date": null,
+        "notes": "This describes the marketplace structure used for the demonstration. It is not an independently verified external market finding."
+      },
+      {
+        "id": "mkt-doordash-002",
+        "category": "Market opportunity hypothesis",
+        "geography": "North America",
+        "claim": "Demand for convenient food ordering and local delivery provides a potential market opportunity.",
+        "source_title": "",
+        "source_url": "",
+        "publication_date": null,
+        "retrieval_date": null,
+        "notes": "This is a hypothesis to investigate, not proof of current market size, growth, or customer demand."
+      },
+      {
+        "id": "mkt-doordash-003",
+        "category": "Revenue model",
+        "geography": "North America",
+        "claim": "Potential revenue sources include merchant commissions, customer delivery or service fees, and subscription offerings.",
+        "source_title": "",
+        "source_url": "",
+        "publication_date": null,
+        "retrieval_date": null,
+        "notes": "These are business-model categories for the demo. Do not present them as verified current financial figures or as a complete description of DoorDash's actual revenue mix."
+      },
+      {
+        "id": "mkt-doordash-004",
+        "category": "Competitive landscape",
+        "geography": "North America",
+        "claim": "Food delivery marketplaces face competition from other delivery platforms, merchant-owned ordering channels, and direct pickup options.",
+        "source_title": "",
+        "source_url": "",
+        "publication_date": null,
+        "retrieval_date": null,
+        "notes": "This identifies competitor categories for evaluation. Do not invent market shares or numerical competitor comparisons."
+      },
+      {
+        "id": "mkt-doordash-005",
+        "category": "Unit economics",
+        "geography": "North America",
+        "claim": "Marketplace viability depends on order frequency, contribution margin per order, delivery costs, customer acquisition cost, retention, and merchant economics.",
+        "source_title": "",
+        "source_url": "",
+        "publication_date": null,
+        "retrieval_date": null,
+        "notes": "These are the metrics an analyst should investigate. No numerical performance is asserted."
+      },
+      {
+        "id": "mkt-doordash-006",
+        "category": "Business risks",
+        "geography": "North America",
+        "claim": "Relevant risks include thin order-level margins, delivery operating costs, customer retention, competition, and regulatory or worker-classification requirements.",
+        "source_title": "",
+        "source_url": "",
+        "publication_date": null,
+        "retrieval_date": null,
+        "notes": "These are evaluation considerations, not a claim that any specific risk has been independently quantified."
+      },
+      {
+        "id": "mkt-doordash-007",
+        "category": "Missing evidence",
+        "geography": "North America",
+        "claim": "The demo does not supply independently verified market size, regional penetration, current competitor market shares, customer acquisition costs, or contribution-margin figures.",
+        "source_title": "",
+        "source_url": "",
+        "publication_date": null,
+        "retrieval_date": null,
+        "verification_status": "UNAVAILABLE",
+        "notes": "These gaps should be explicitly visible to demonstrate that PitchLens distinguishes hypotheses from supporting evidence."
+      }
+    ],
+    "confidence_score": 0.85,
+    "confidence_limitations": "Demonstration fixture — not live external research.",
+    "is_demo": true,
+    "created_at": "2024-10-13T09:02:30.000Z"
+  }
+}

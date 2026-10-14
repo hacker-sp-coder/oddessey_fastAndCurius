@@ -11,7 +11,9 @@ class BaseEvaluator(ABC):
         transcript: str,
         startup_name: Optional[str] = None,
         target_geography: Optional[str] = None,
-        industry: Optional[str] = None
+        industry: Optional[str] = None,
+        is_demo: bool = False,
+        allow_fallback: bool = False
     ) -> EvaluationResult:
         """Evaluate pitch transcript viability against versioned rubric."""
         pass

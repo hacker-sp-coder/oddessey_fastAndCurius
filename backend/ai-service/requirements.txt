@@ -1,4 +1,4 @@
-# Core AI Service Dependencies (Lightweight, CPU-compatible, no GPU required)
+# Core AI Service Dependencies (Lightweight, CPU-compatible, no GPU/PyTorch stack)
 fastapi>=0.110.0
 uvicorn[standard]>=0.28.0
 pydantic>=2.6.0
@@ -7,3 +7,9 @@ httpx>=0.27.0
 python-dotenv>=1.0.0
 pytest>=8.0.0
 pytest-asyncio>=0.23.0
+
+# Audio & Video decoding
+av>=14.0.0
+
+# Speech-to-text inference on CPU via CTranslate2 (no torch or NVIDIA CUDA stack required)
+faster-whisper>=1.0.0

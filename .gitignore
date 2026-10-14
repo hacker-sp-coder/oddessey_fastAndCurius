@@ -27,6 +27,8 @@ storage/temp/*
 !storage/temp/.gitkeep
 storage/reports/*
 !storage/reports/.gitkeep
+storage/models/*
+!storage/models/.gitkeep
 *.sqlite
 *.sqlite3
 *.db
@@ -36,7 +38,7 @@ storage/reports/*
 .pytest_cache/
 .coverage
 htmlcov/
-models/
+/models/
 whisper-models/
 *.bin
 *.pt

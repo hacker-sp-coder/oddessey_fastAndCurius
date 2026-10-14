@@ -6,8 +6,23 @@ from pathlib import Path
 from typing import Optional, Tuple
 from app.config import settings
 
+def _sync_windows_path() -> None:
+    if os.name == "nt":
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Environment") as key:
+                user_path, _ = winreg.QueryValueEx(key, "Path")
+                for p in user_path.split(os.pathsep):
+                    if p and os.path.isdir(p) and p not in os.environ.get("PATH", ""):
+                        os.environ["PATH"] = p + os.pathsep + os.environ.get("PATH", "")
+        except Exception:
+            pass
+
 def is_ffmpeg_available() -> bool:
     """Check if ffmpeg executable is available in PATH."""
+    if shutil.which("ffmpeg") is not None:
+        return True
+    _sync_windows_path()
     return shutil.which("ffmpeg") is not None
 
 def get_ffmpeg_version() -> Optional[str]:

@@ -3,7 +3,7 @@ services:
     build:
       context: ./backend/ai-service
       dockerfile: Dockerfile
-    container_name: screenai-ai-service
+    container_name: pitchlens-ai-service
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -17,14 +17,16 @@ services:
       - GROQ_TRANSCRIPTION_MODEL=${GROQ_TRANSCRIPTION_MODEL:-whisper-large-v3-turbo}
       - WHISPER_DEVICE=${WHISPER_DEVICE:-cpu}
       - WHISPER_COMPUTE_TYPE=${WHISPER_COMPUTE_TYPE:-int8}
+      - WHISPER_DOWNLOAD_ROOT=/app/storage/models
+      - WHISPER_CPU_FALLBACK=${WHISPER_CPU_FALLBACK:-true}
       - TEMP_STORAGE_DIR=/app/storage/temp
       - FIXTURES_DIR=/app/fixtures
     volumes:
       - ./storage:/app/storage
       - ./fixtures:/app/fixtures:ro
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
-      interval: 10s
+      test: [ "CMD-SHELL", "curl -f http://localhost:8000/health || exit 1" ]
+      interval: 30s
       timeout: 5s
       retries: 3
       start_period: 5s
@@ -33,7 +35,7 @@ services:
     build:
       context: ./backend/api
       dockerfile: Dockerfile
-    container_name: screenai-api
+    container_name: pitchlens-api
     restart: unless-stopped
     ports:
       - "4000:4000"
@@ -54,7 +56,7 @@ services:
       ai-service:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:4000/api/health || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:4000/api/health || exit 1" ]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -64,7 +66,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: screenai-frontend
+    container_name: pitchlens-frontend
     restart: unless-stopped
     ports:
       - "5173:80"
@@ -72,7 +74,7 @@ services:
       api:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:80/ || exit 1" ]
       interval: 30s
       timeout: 5s
       retries: 3

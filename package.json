@@ -1,7 +1,7 @@
 {
-  "name": "ai-idea-screening-monorepo",
+  "name": "pitchlens-monorepo",
   "version": "1.0.0",
-  "description": "Full-Stack AI Idea Screening Hackathon MVP with explainable rubric and market provenance",
+  "description": "PitchLens — Evidence-First Startup Screening and Viability Intelligence Workspace",
   "private": true,
   "workspaces": [
     "frontend",
@@ -22,5 +22,8 @@
     "start:ai": "cd backend/ai-service && .venv\\Scripts\\uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload",
     "start:api": "cd backend/api && npm run dev",
     "start:ui": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1"
   }
 }

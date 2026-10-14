@@ -1,9 +1,9 @@
-export type PitchStatus = 
-  | 'QUEUED' 
-  | 'PROCESSING' 
-  | 'TRANSCRIPTION_READY' 
-  | 'ANALYZING' 
-  | 'COMPLETED' 
+export type PitchStatus =
+  | 'QUEUED'
+  | 'PROCESSING'
+  | 'TRANSCRIPTION_READY'
+  | 'ANALYZING'
+  | 'COMPLETED'
   | 'FAILED';
 
 export type InputType = 'VIDEO' | 'AUDIO' | 'PDF' | 'TEXT' | 'MANUAL';
@@ -25,6 +25,8 @@ export interface PitchRecord {
   error_message: string | null;
   created_at: string;
   updated_at: string;
+  overall_score?: number | null;
+  evaluation_method?: string | null;
 }
 
 export interface CriterionScore {
@@ -46,8 +48,16 @@ export interface MarketEvidenceItem {
   source_url: string;
   publication_date?: string;
   retrieval_date?: string;
-  verification_status: 'VERIFIED' | 'SYNTHETIC_DEMO';
+  verification_status?: 'VERIFIED' | 'UNVERIFIED_CLAIM' | 'UNAVAILABLE';
   notes?: string;
+}
+
+export interface InferredMetadata {
+  startup_name?: string;
+  industry?: string;
+  target_geography?: string;
+  confidence: number;
+  inferred: boolean;
 }
 
 export interface AnalysisRecord {
@@ -67,6 +77,7 @@ export interface AnalysisRecord {
   confidence_score: number;
   confidence_limitations: string;
   is_demo: boolean;
+  inferred_metadata?: InferredMetadata;
   created_at: string;
 }
 

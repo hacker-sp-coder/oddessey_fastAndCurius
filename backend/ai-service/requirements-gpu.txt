@@ -1,0 +1,5 @@
+# Optional GPU acceleration requirements for NVIDIA CUDA on Windows/Linux
+# Extends CPU requirements with NVIDIA CUDA 12 runtime wheels for CTranslate2
+-r requirements.txt
+nvidia-cublas-cu12
+nvidia-cudnn-cu12

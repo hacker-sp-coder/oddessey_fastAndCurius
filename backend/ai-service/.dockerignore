@@ -1,8 +1,8 @@
 .venv
 __pycache__
-*.pyc
-*.pyo
-*.pyd
+**/*.pyc
+**/*.pyo
+**/*.pyd
 .pytest_cache
 .coverage
 htmlcov
@@ -15,3 +15,5 @@ whisper-models
 .gitignore
 .env
 .env.*
+storage
+smoke_test_gpu.py

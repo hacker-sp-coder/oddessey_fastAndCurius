@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config.js';
 import { pitchService } from '../services/pitchService.js';
 import { InputType } from '../types/index.js';
+import { sanitizeUtf8Filename } from '../utils/text.js';
 
 const router = Router();
 
@@ -20,7 +21,7 @@ const storage = multer.diskStorage({
     cb(null, config.uploadDir);
   },
   filename: (_req, file, cb) => {
-    const safeExt = path.extname(file.originalname).toLowerCase().replace(/[^a-z0-9.]/g, '');
+    const safeExt = path.extname(sanitizeUtf8Filename(file.originalname)).toLowerCase().replace(/[^a-z0-9.]/g, '');
     const uniqueName = `upload_${uuidv4()}${safeExt}`;
     cb(null, uniqueName);
   }
@@ -108,14 +109,24 @@ router.post(
       });
     }
 
+    if (file.size === 0) {
+      if (file.path && fs.existsSync(file.path)) {
+        try { fs.unlinkSync(file.path); } catch {}
+      }
+      return res.status(400).json({
+        error: 'Uploaded file is empty (0 bytes). Please select a valid non-empty pitch file.'
+      });
+    }
+
     const ext = path.extname(file.originalname);
     const inputType = determineInputType(ext);
 
+    const cleanedFilename = sanitizeUtf8Filename(path.basename(file.originalname));
     const pitch = pitchService.createPitch({
       startupName: startup_name,
       targetGeography: target_geography,
       industry: industry,
-      originalFilename: path.basename(file.originalname),
+      originalFilename: cleanedFilename,
       inputType,
       mimeType: file.mimetype || 'application/octet-stream',
       storedFilePath: file.path,
@@ -128,9 +139,11 @@ router.post(
 );
 
 // POST /api/pitches/demo (Seed or retrieve demo pitch fixture)
-router.post('/demo', (_req, res) => {
+router.post('/demo', (req: Request, res: Response) => {
   try {
-    const report = pitchService.seedDemoPitch();
+    const demoType = req.body?.demo_type || req.query?.type || req.query?.demo;
+    const force = Boolean(req.body?.force || req.query?.force);
+    const report = pitchService.seedDemoPitch(demoType ? String(demoType) : undefined, force);
     res.json(report);
   } catch (err: any) {
     res.status(500).json({ error: `Failed to seed demo pitch: ${err.message}` });
@@ -144,6 +157,31 @@ router.get('/:id', (req, res) => {
     return res.status(404).json({ error: 'Pitch not found' });
   }
   res.json({ pitch });
+});
+
+// PATCH /api/pitches/:id (Update startup_name, industry, target_geography)
+router.patch('/:id', (req, res) => {
+  const { startup_name, industry, target_geography } = req.body;
+  try {
+    const updated = pitchService.updatePitchMetadata(req.params.id, {
+      startupName: startup_name,
+      industry,
+      targetGeography: target_geography
+    });
+    res.json({ pitch: updated });
+  } catch (err: any) {
+    res.status(404).json({ error: err.message });
+  }
+});
+
+// POST /api/pitches/:id/retry (Retry ingestion/transcription for a failed pitch)
+router.post('/:id/retry', (req, res) => {
+  try {
+    const updated = pitchService.retryPitch(req.params.id);
+    res.json({ pitch: updated, message: 'Transcription job re-enqueued.' });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // POST /api/pitches/:id/transcript
@@ -163,9 +201,13 @@ router.post('/:id/transcript', (req, res) => {
 
 // POST /api/pitches/:id/analyze
 router.post('/:id/analyze', async (req, res) => {
-  const { provider_override } = req.body;
+  const { provider_override, force_reanalyze } = req.body;
   try {
-    const analysis = await pitchService.analyzePitch(req.params.id, provider_override);
+    const analysis = await pitchService.analyzePitch(
+      req.params.id,
+      provider_override,
+      Boolean(force_reanalyze)
+    );
     res.json({ analysis });
   } catch (err: any) {
     res.status(400).json({ error: err.message });
